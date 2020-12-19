@@ -1,9 +1,11 @@
-FROM adoptopenjdk/openjdk8:debian
+FROM debian:buster
 
 # Install git lfs on Debian stretch per https://github.com/git-lfs/git-lfs/wiki/Installation#debian-and-ubuntu
 # Avoid JENKINS-59569 - git LFS 2.7.1 fails clone with reference repository
-RUN apt-get update && apt-get upgrade -y && apt-get install -y git curl gpg unzip libfreetype6 libfontconfig1 && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install -y git-lfs && git lfs install && rm -rf /var/lib/apt/lists/*
-
+RUN apt-get update && apt-get upgrade -y && apt-get install -y software-properties-common git curl gpg unzip libfreetype6 libfontconfig1 && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && apt-get install -y git-lfs && git lfs install && rm -rf /var/lib/apt/lists/*
+RUN curl https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+RUN add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+RUN apt-get update && apt-get install adoptopenjdk-8-hotspot
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
